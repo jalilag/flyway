@@ -8,8 +8,11 @@ Param(
 # Version
     Write-host "version" $version.length.ToString()
     Write-host "prefix" $prefix
+    if(!(Test-Path -Path "data" )){
+        New-Item -ItemType directory -Path "data"
+    }
 if ($version.length -eq 1) {
-    Write-host "C1"
+    New-Item -ErrorAction Ignore -ItemType directory -Path data
     $fichiers = Get-ChildItem data/$prefix$version*.sql
     $elem = @()
     foreach ($i in $fichiers) {
