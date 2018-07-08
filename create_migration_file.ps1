@@ -5,15 +5,17 @@ Param(
     [string]$version,
     [string]$prefix
 )
+
 # Version
-    Write-host "version" $version.length.ToString()
-    Write-host "prefix" $prefix
-    if(!(Test-Path -Path "data" )){
-        New-Item -ItemType directory -Path "data"
-    }
+$sql_folder = "../sql_migration"
+Write-host "version" $version.length.ToString()
+Write-host "prefix" $prefix
+if(!(Test-Path -Path $sql_folder )){
+    New-Item -ItemType directory -Path $sql_folder
+}
 if ($version.length -eq 1) {
-    New-Item -ErrorAction Ignore -ItemType directory -Path data
-    $fichiers = Get-ChildItem data/$prefix$version*.sql
+    New-Item -ErrorAction Ignore -ItemType directory -Path $sql_folder
+    $fichiers = Get-ChildItem ../sql_migration/$prefix$version*.sql
     $elem = @()
     foreach ($i in $fichiers) {
         $elem += [int]$i.name.split('_')[1]
@@ -25,7 +27,7 @@ if ($version.length -eq 1) {
         $new_v = 1
     }
 } else {
-    $fichiers = Get-ChildItem data/v*.sql
+    $fichiers = Get-ChildItem $sql_folder/v*.sql
     $elem = @()
     foreach ($i in $fichiers) {
         $elem = [int]$i.name.split('_')[0].split($prefix)[1]
@@ -54,9 +56,9 @@ if ($desc.split(' ').length -gt 1) {
     }
 }
 if ($version.length -eq 1) {
-    $fname = "data/" + $prefix + $version + '_' + $new_v + "_" + $fname +'.sql'
+    $fname = $sql_folder + "/" + $prefix + $version + '_' + $new_v + "_" + $fname +'.sql'
 } else {
-    $fname = "data/" + $prefix + $new_v + '_1__' + $fname + '.sql'
+    $fname = $sql_folder + "/" + $prefix + $new_v + '_1__' + $fname + '.sql'
 }
 Write-Host "Fichier créer : " + $fname
 New-item  $fname
